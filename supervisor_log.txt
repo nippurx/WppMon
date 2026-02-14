@@ -1,0 +1,5 @@
+2025-12-04 10:08:01.595072 - Supervisor iniciado.
+2025-12-04 10:08:11.600004 - ⚠️ WppMon no actualiza el CSV hace 34778s
+2025-12-04 10:08:34.398481 - ⚠️ WppMon no actualiza el CSV hace 34801s
+2025-12-04 10:14:52.893555 - ⚠️ WppMon no actualiza el CSV hace 140s
+2025-12-04 10:15:07.357583 - ⚠️ WppMon no actualiza el CSV hace 155s

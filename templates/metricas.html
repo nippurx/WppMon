@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<div class="card">
+    <div class="card-title">Métricas Psicológicas (Estadísticas)</div>
+    <p>
+        Estas métricas son estimaciones basadas únicamente en datos objetivos
+        (sesiones y duraciones). No representan interpretación emocional humana,
+        sino indicadores estadísticos para análisis posterior.
+    </p>
+</div>
+
+<!-- ===== INTENSIDAD ===== -->
+<div class="card">
+    <div class="card-title">Intensidad Emocional</div>
+    <p>
+        Nivel de carga afectiva medido por tiempo total online del día.
+    </p>
+
+    <div style="font-size: 26px; margin-top: 10px;">
+        🔥 {{ metricas.intensidad }} / 100
+    </div>
+
+    <div style="margin-top: 10px;">
+        {% if metricas.intensidad < 30 %}
+            <span class="badge badge-green">Baja</span>
+        {% elif metricas.intensidad < 70 %}
+            <span class="badge badge-yellow">Media</span>
+        {% else %}
+            <span class="badge badge-red">Alta</span>
+        {% endif %}
+    </div>
+</div>
+
+
+
+<!-- ===== SINCRONÍA ===== -->
+<div class="card">
+    <div class="card-title">Sincronía con tus horarios</div>
+
+    <p>
+        Qué tanto coincide su actividad con las horas en que vos estás disponible (8–23).
+    </p>
+
+    <div style="font-size: 26px; margin-top: 10px;">
+        ⏱️ {{ metricas.sincronia }} / 100
+    </div>
+</div>
+
+
+
+<!-- ===== VARIACIÓN ===== -->
+<div class="card">
+    <div class="card-title">Variación del Uso</div>
+
+    <p>
+        Medida de dispersión horaria. Horarios muy variados pueden indicar
+        inestabilidad o conversación con terceros.
+    </p>
+
+    <div style="font-size: 26px; margin-top: 10px;">
+        📊 {{ metricas.variacion }} / 100
+    </div>
+</div>
+
+
+
+<!-- ===== RIESGO ESTADÍSTICO ===== -->
+<div class="card">
+    <div class="card-title">Riesgo Estadístico de Tercero</div>
+
+    <p>
+        Estimación basada en duraciones prolongadas.
+        (No es interpretación emocional. Es un indicador matemático preliminar.)
+    </p>
+
+    <div style="font-size: 26px; margin-top: 10px;">
+        {% if metricas.riesgo_tercero == "bajo" %}
+            🟢 Bajo
+        {% elif metricas.riesgo_tercero == "medio" %}
+            🟡 Medio
+        {% elif metricas.riesgo_tercero == "alto" %}
+            🔥 Alto
+        {% else %}
+            💀 Crítico
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

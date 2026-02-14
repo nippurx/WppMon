@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<div class="card">
+    <div class="card-title">Gaps Detectados</div>
+    <p>Los gaps son períodos offline. Clasificados según duración y contexto.</p>
+</div>
+
+
+<!-- ============================= -->
+<!-- GAPS DE SUEÑO -->
+<!-- ============================= -->
+<div class="card">
+    <div class="card-title">Gaps de Sueño 💤</div>
+
+    {% if gaps.sueno %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+            {% for g in gaps.sueno %}
+            <tr class="{{ 'falso' if g.falso else '' }}">
+                <td>{{ g.inicio|fecha_dia }}</td>
+                <td>{{ g.fin|fecha_dia }}</td>
+                <td class="right-align {{ list_font_class }}">{{ g.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No se detectaron gaps de sueño.</p>
+    {% endif %}
+</div>
+
+
+
+<!-- ============================= -->
+<!-- GAPS SOSPECHOSOS -->
+<!-- ============================= -->
+<div class="card">
+    <div class="card-title">Gaps Sospechosos ⚠️</div>
+
+    {% if gaps.sospechosos %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+            {% for g in gaps.sospechosos %}
+            <tr class="{{ 'falso' if g.falso else '' }}">
+                <td>{{ g.inicio|fecha_dia }}</td>
+                <td>{{ g.fin|fecha_dia }}</td>
+                <td class="right-align badge badge-yellow {{ list_font_class }}">{{ g.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No hay gaps sospechosos.</p>
+    {% endif %}
+</div>
+
+
+
+<!-- ============================= -->
+<!-- GAPS ROJOS -->
+<!-- ============================= -->
+<div class="card">
+    <div class="card-title">Gaps Rojos 🔥</div>
+
+    {% if gaps.rojos %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+            {% for g in gaps.rojos %}
+            <tr class="{{ 'falso' if g.falso else '' }}">
+                <td>{{ g.inicio|fecha_dia }}</td>
+                <td>{{ g.fin|fecha_dia }}</td>
+                <td class="right-align badge badge-red {{ list_font_class }}">{{ g.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No se encontraron gaps rojos.</p>
+    {% endif %}
+</div>
+
+
+
+<!-- ============================= -->
+<!-- GAPS TIPO CITA -->
+<!-- ============================= -->
+<div class="card">
+    <div class="card-title">Gaps Tipo Cita ❤️</div>
+
+    {% if gaps.cita %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+            {% for g in gaps.cita %}
+            <tr class="{{ 'falso' if g.falso else '' }}">
+                <td>{{ g.inicio|fecha_dia }}</td>
+                <td>{{ g.fin|fecha_dia }}</td>
+                <td class="right-align badge badge-red {{ list_font_class }}">{{ g.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No se detectaron gaps tipo cita.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+

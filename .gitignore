@@ -1,0 +1,48 @@
+# 🔹 Archivos de configuración sensibles
+.env
+.env.*
+credentials.json
+outbox_failures.jsonl
+outbox_done.jsonl
+token.json
+__pycache__/
+*.log
+.venv/
+
+
+# 🔹 Archivos de salida / temporales
+*.mp3
+*.mp4
+*.wav
+*.m4a
+*.ass
+*.srt
+*.log
+*.tmp
+*.DS_Store
+outbox_failures.jsonl
+outbox_done.jsonl
+
+# 🔹 Archivos de pruebas locales
+scripts/test*
+
+# 🔹 Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔹 Bases de datos locales
+*.sqlite3
+
+# 🔹 carpetas
+.vscode/
+.idea/
+temp/
+test/
+*.swp
+json_dias/
+data/
+docs/
+
+

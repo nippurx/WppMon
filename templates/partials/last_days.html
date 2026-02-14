@@ -1,0 +1,8 @@
+<div class="last-days">
+    {% for d in ultimos_dias %}
+        <a href="{{ request.path }}?date={{ d.date }}"
+           class="last-day-btn {% if start_date == d.date and end_date == d.date %}active{% endif %}">
+            {{ d.label }}
+        </a>
+    {% endfor %}
+</div>

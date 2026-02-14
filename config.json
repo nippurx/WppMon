@@ -1,0 +1,10 @@
+{
+    "gap_sueno_horas": 5,
+    "gap_sospechoso_min": 15,
+    "gap_rojo_min": 45,
+    "gap_cita_min": 90,
+    "charla_larga_min": 20,
+    "charla_muy_larga_min": 45,
+    "charla_intima_min": 60,
+    "LIST_FONT_SIZE_PX": 18
+}

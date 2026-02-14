@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ title if title else 'WppMon' }}</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .list-font { font-size: {{ list_font_size_px or 18 }}px; }
+    </style>
+
+</head>
+<body id="page-top">
+
+    <div class="fixed-actions">
+        <button class="action-btn action-home" onclick="window.location.href='/'">
+            🏠 Home
+        </button>
+        <button class="action-btn action-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+            ↑ Arriba
+        </button>
+    </div>
+
+    <div class="container">
+
+        <!-- TÍTULO PRINCIPAL -->
+        {% if title %}
+        <h1>{{ title }}</h1>
+        {% endif %}
+
+        <!-- CONTENIDO DE CADA PÁGINA -->
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+    {% if request.path == '/' %}
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <div class="card-title">Sesiones + Offline (Cronol??gico)</div>
+    <p>Lista plana de sesiones online y per??odos offline en orden cronol??gico.</p>
+</div>
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<div class="card">
+    <div class="card-title">Eventos</div>
+    {% if items %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Tipo</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duraci??n</th>
+                <th>Dudoso</th>
+            </tr>
+            {% for item in items %}
+            <tr class="{{ 'dudoso' if item.dudoso else '' }}{% if item.tipo == 'offline' %} offline-row{% endif %}">
+                <td>{% if item.tipo == "offline" %}🔴 offline{% else %}🟢 online{% endif %}</td>
+                <td>{{ item.inicio|fecha_dia }}</td>
+                <td>
+                    {% if item.fin %}
+                        {{ item.fin|fecha_dia }}
+                    {% else %}
+                        (abierta)
+                    {% endif %}
+                </td>
+                <td class="right-align {{ list_font_class }}">
+                    {% if item.duracion %}
+                        <span class="{{ charla_badge_class(item.duracion, item.inicio) }} {{ list_font_class }}">{{ item.duracion|duracion_hm }}</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td class="right-align">
+                    {% if item.dudoso %}
+                    <form action="/desmarcar_dudoso" method="post">
+                        <input type="hidden" name="inicio" value="{{ item.inicio_str }}">
+                        <input type="hidden" name="fin" value="{{ item.fin_str }}">
+                        <button type="submit" class="btn btn-small">Quitar duda</button>
+                    </form>
+                    {% else %}
+                    <form action="/marcar_dudoso" method="post">
+                        <input type="hidden" name="inicio" value="{{ item.inicio_str }}">
+                        <input type="hidden" name="fin" value="{{ item.fin_str }}">
+                        <button type="submit" class="btn btn-small">Marcar dudoso</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+        <p>No hay eventos para mostrar.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

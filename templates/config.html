@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <div class="card-title">Configuración del Sistema</div>
+    <p>
+        Ajustá los parámetros de detección.  
+        Cada cambio afecta el análisis de sesiones, gaps y charlas.
+    </p>
+</div>
+
+<div class="card">
+    <form action="/config-save" method="post" style="margin-top:20px;">
+
+        <h3>Gaps</h3>
+
+        <label>Gap de sueño (horas):</label><br>
+        <input type="number" step="0.1" class="input" name="gap_sueno_horas"
+               value="{{ config.gap_sueno_horas }}"><br><br>
+
+        <label>Gap sospechoso (minutos):</label><br>
+        <input type="number" class="input" name="gap_sospechoso_min"
+               value="{{ config.gap_sospechoso_min }}"><br><br>
+
+        <label>Gap rojo (minutos):</label><br>
+        <input type="number" class="input" name="gap_rojo_min"
+               value="{{ config.gap_rojo_min }}"><br><br>
+
+        <label>Gap tipo cita (minutos):</label><br>
+        <input type="number" class="input" name="gap_cita_min"
+               value="{{ config.gap_cita_min }}"><br><br>
+
+
+
+
+        <h3>Charlas</h3>
+
+        <label>Charla larga (minutos):</label><br>
+        <input type="number" class="input" name="charla_larga_min"
+               value="{{ config.charla_larga_min }}"><br><br>
+
+        <label>Charla muy larga (minutos):</label><br>
+        <input type="number" class="input" name="charla_muy_larga_min"
+               value="{{ config.charla_muy_larga_min }}"><br><br>
+
+        <label>Charla íntima (minutos):</label><br>
+        <input type="number" class="input" name="charla_intima_min"
+               value="{{ config.charla_intima_min }}"><br><br>
+
+
+        <h3>Listados</h3>
+
+        <label>Tamano de fuente en fechas (px):</label><br>
+        <input type="number" class="input" name="LIST_FONT_SIZE_PX"
+               value="{{ config.LIST_FONT_SIZE_PX or 18 }}"><br><br>
+
+        <button type="submit" class="btn btn-large" style="margin-top: 20px;">
+            💾 Guardar Cambios
+        </button>
+
+    </form>
+</div>
+
+<style>
+.input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    background: #0d171f;
+    color: #b0fafc;
+    border: 1px solid #1b2630;
+    border-radius: 6px;
+    font-size: 16px;
+}
+</style>
+
+{% endblock %}

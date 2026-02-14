@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<div class="card">
+    <div class="card-title">Heatmap de Actividad por Hora</div>
+    <p>El color indica la frecuencia de actividad de WhatsApp en cada hora del día.</p>
+</div>
+
+<style>
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 columnas, 4 filas */
+    gap: 10px;
+}
+
+.heatmap-cell {
+    background: #0d171f;
+    border: 1px solid #1b2630;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.int-0  { background: #0d171f; }          /* sin actividad */
+.int-1  { background: #00333b; }
+.int-2  { background: #005c66; }
+.int-3  { background: #008899; }
+.int-4  { background: #00b4cc; }
+.int-5  { background: #00eaff; color: #000; }
+
+@media (max-width: 600px) {
+    .heatmap-grid {
+        grid-template-columns: repeat(4, 1fr); /* móvil: 4 columnas */
+    }
+    .heatmap-cell {
+        padding: 10px 0;
+        font-size: 13px;
+    }
+}
+</style>
+
+<div class="card">
+    <div class="heatmap-grid">
+
+        {% for hora, count in horas.items() %}
+
+            {# Normalizamos la intensidad a 0–5 #}
+            {% set nivel = (count * 5) // max_val if max_val > 0 else 0 %}
+            {% if nivel > 5 %}
+                {% set nivel = 5 %}
+            {% endif %}
+
+            <div class="heatmap-cell int-{{ nivel }}">
+                {{ hora }}h<br>
+                <span style="font-size:12px;color:#b0fafc;">
+                    {{ count }}
+                </span>
+            </div>
+
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

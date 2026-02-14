@@ -1,0 +1,347 @@
+/* ============================
+   TIPOGRAFÍA GENERAL
+   ============================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0a0f14; /* C1 fondo hacker */
+    color: #b0fafc;           /* texto celeste */
+    font-family: 'Inter', sans-serif;
+    padding-bottom: 80px; /* espacio para la franja de botones inferior */
+}
+
+/* ============================
+   LAYOUT GENERAL
+   ============================ */
+.container {
+    width: 95%;
+    max-width: 1100px;
+    margin: auto;
+    padding-top: 20px;
+}
+
+h1, h2, h3 {
+    color: #00eaff;
+    font-weight: 600;
+}
+
+/* ============================
+   CARDS (Card B: Pro, con sombra)
+   ============================ */
+.card {
+    background: #111820;
+    padding: 18px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.15);
+    border: 1px solid #1b2630;
+}
+
+.card-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #00eaff;
+}
+
+.card-section {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+/* Badges pequeños */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-left: 10px;
+    font-weight: 600;
+}
+
+.badge-green { background: #003b32; color: #00ffcc; }
+.badge-red   { background: #3b0000; color: #ff6b6b; }
+.badge-yellow { background: #3b3300; color: #ffe066; }
+
+/* ============================
+   TABLAS (Tabla 2 Dashboard)
+   ============================ */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #111820;
+}
+
+th {
+    background: #0d171f;
+    color: #00eaff;
+    padding: 10px;
+    font-size: 16px;
+    border-bottom: 2px solid #1b2630;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #1b2630;
+    font-size: 15px;
+}
+
+.right-align {
+    text-align: right;
+    white-space: nowrap;
+}
+
+tr:nth-child(even) {
+    background: #0f141a;
+}
+
+.offline-row {
+    background-color: #330000;
+}
+
+tr.falso,
+.falso,
+tr.dudoso,
+.dudoso {
+    background-color: #cccccc26;
+    border-left: 4px solid #666;
+}
+
+.timeline-row.falso .timeline-bar {
+    background: #b3b3b360;
+}
+
+.timeline-row.dudoso .timeline-bar {
+    background: #b3b3b360;
+}
+
+/* Icons alineados */
+td i {
+    font-style: normal;
+    margin-right: 6px;
+}
+
+/* ============================
+   BOTONES
+   ============================ */
+.btn {
+    display: inline-block;
+    padding: 10px 16px;
+    margin: 8px 0;
+    background: #00eaff22;
+    color: #00eaff;
+    border: 1px solid #00eaff55;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.btn:hover {
+    background: #00eaff44;
+}
+
+/* Botones grandes para móvil */
+.btn-large {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin: 12px 0;
+    font-size: 20px;
+}
+
+/* ============================
+   BOTONES FIJOS INFERIORES
+   ============================ */
+.fixed-actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #0d171f;
+    z-index: 50;
+    box-shadow: 0 -2px 10px rgba(0, 234, 255, 0.18);
+}
+
+.action-btn {
+    border: none;
+    padding: 12px 10px;
+    background: #0d171f;
+    color: #00eaff;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+}
+
+.action-btn:hover {
+    background: #13212d;
+}
+
+.action-home {
+    border-right: 1px solid #13212d;
+}
+
+/* ============================
+   ESTADO (ONLINE/OFFLINE)
+   ============================ */
+.status-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    margin: 20px auto;
+    background: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.online { background: #004d40; color: #00ffcc; }
+.offline { background: #4d0000; color: #ff6b6b; }
+
+/* ============================
+   MENU (M1)
+   ============================ */
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 25px;
+}
+
+.menu-item {
+    background: #111820;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.15);
+    border: 1px solid #1b2630;
+    color: #00eaff;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.menu-item:hover {
+    background: #15212c;
+}
+
+/* ============================
+   FILTRO DE FECHAS
+   ============================ */
+.filter-bar {
+    margin: 10px 0 20px 0;
+    padding: 10px;
+    background: #0d171f;
+    border: 1px solid #1b2630;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.1);
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.filter-btn {
+    padding: 8px 12px;
+    border: 1px solid #00eaff55;
+    border-radius: 8px;
+    color: #00eaff;
+    text-decoration: none;
+    font-weight: 600;
+    background: #111820;
+}
+
+.filter-btn.active {
+    background: #00eaff33;
+    border-color: #00eaff;
+}
+
+.range-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.range-form.hidden {
+    display: none;
+}
+
+.range-form input[type="date"] {
+    padding: 8px;
+    background: #0f141a;
+    border: 1px solid #1b2630;
+    color: #b0fafc;
+    border-radius: 6px;
+}
+
+.btn-small {
+    padding: 8px 12px;
+    font-size: 16px;
+}
+
+/* ============================
+   ÚLTIMOS 5 DÍAS
+   ============================ */
+.last-days {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0 16px 0;
+}
+
+.last-day-btn {
+    padding: 8px 10px;
+    background: #111820;
+    border: 1px solid #00eaff55;
+    border-radius: 8px;
+    color: #00eaff;
+    text-decoration: none;
+    font-weight: 600;
+    min-width: 72px;
+    text-align: center;
+}
+
+.last-day-btn.active {
+    background: #00eaff33;
+    border-color: #00eaff;
+}
+/* ============================
+   RESPONSIVE (Celular)
+   ============================ */
+@media (max-width: 600px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .card-title {
+        font-size: 20px;
+    }
+}

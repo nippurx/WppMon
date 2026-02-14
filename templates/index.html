@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- ESTADO ACTUAL -->
+<div class="card">
+    <div class="card-title">Estado Actual</div>
+
+    <div class="status-circle {{ estado }}">
+        {{ estado.upper() }}
+    </div>
+
+    <div style="text-align:center; margin-top:10px; font-size:16px;">
+        Último cambio:<br>
+        <span style="color:#00eaff;">{{ timestamp|fecha_dia }}</span>
+        {% if estado_duracion %}
+        <div style="margin-top:6px;">
+            {% if estado_duracion.status == "online" %}
+            <span class="{{ estado_duracion.color }} {{ list_font_class }}" style="display:inline-block; padding:6px 10px;">
+                Online desde: {{ estado_duracion.horas }} h {{ estado_duracion.mins }} m
+            </span>
+            {% else %}
+            <span class="{{ estado_duracion.color }} {{ list_font_class }}" style="display:inline-block; padding:6px 10px;">
+                Offline desde: {{ estado_duracion.horas }} h {{ estado_duracion.mins }} m
+            </span>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+    </div>
+</div>
+
+<!-- RESUMEN DEL DÍA -->
+<div class="card">
+    <div class="card-title">Resumen del día</div>
+
+    <div class="card-section">
+        🕒 Sesiones hoy:
+        <span class="badge badge-green">{{ resumen.sesiones_hoy }}</span>
+    </div>
+
+    <div class="card-section">
+        ⏳ Gaps sospechosos:
+        <span class="badge badge-yellow">{{ resumen.gaps_sos }}</span>
+    </div>
+
+    <div class="card-section">
+        ⚠ Charlas largas:
+        <span class="badge badge-red">{{ resumen.charlas_largas }}</span>
+    </div>
+</div>
+
+<!-- MENÚ PRINCIPAL -->
+<h2 style="margin-top:30px;">Menú</h2>
+
+<div class="menu-grid">
+
+    <a class="menu-item" href="/cronologico">Cronológico</a>
+    <a class="menu-item" href="/sesiones">Sesiones</a>
+    <a class="menu-item" href="/gaps">Gaps & Sueño</a>
+
+    <a class="menu-item" href="/sospechosas">Charlas Sospechosas</a>
+    <a class="menu-item" href="/timeline">Timeline</a>
+    <a class="menu-item" href="/heatmap">Heatmap</a>
+   
+    <a class="menu-item" href="/metricas">Métricas Psicológicas</a>
+
+    
+    <a class="menu-item" href="/dia">Informe por Día</a>
+    <a class="menu-item" href="/config">Configuración</a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<!-- TÍTULO GENERAL -->
+<div class="card">
+    <div class="card-title">Charlas Sospechosas</div>
+    <p>Análisis avanzado de sesiones largas y en horarios sensibles.</p>
+</div>
+
+
+<!-- ================================== -->
+<!-- CHARLAS LARGAS -->
+<!-- ================================== -->
+<div class="card">
+    <div class="card-title">Charlas Largas (20+ min)</div>
+
+    {% if sospechosas.largas %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+
+            {% for s in sospechosas.largas %}
+            <tr class="{{ 'falso' if s.falso else '' }}">
+                <td>{{ s.inicio|fecha_dia(s.inicio_dia) }}</td>
+                <td>{{ s.fin|fecha_dia(s.fin_dia) }}</td>
+                <td class="right-align {{ charla_badge_class(s.duracion, s.inicio) }} {{ list_font_class }}">{{ s.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No se encontraron charlas largas.</p>
+    {% endif %}
+</div>
+
+
+
+<!-- ================================== -->
+<!-- CHARLAS MUY LARGAS -->
+<!-- ================================== -->
+<div class="card">
+    <div class="card-title">Charlas Muy Largas (45+ min)</div>
+
+    {% if sospechosas.muy_largas %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+
+            {% for s in sospechosas.muy_largas %}
+            <tr class="{{ 'falso' if s.falso else '' }}">
+                <td>{{ s.inicio|fecha_dia(s.inicio_dia) }}</td>
+                <td>{{ s.fin|fecha_dia(s.fin_dia) }}</td>
+                <td class="right-align {{ charla_badge_class(s.duracion, s.inicio) }} {{ list_font_class }}">{{ s.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No se encontraron charlas muy largas.</p>
+    {% endif %}
+</div>
+
+
+
+<!-- ================================== -->
+<!-- CHARLAS ÍNTIMAS -->
+<!-- ================================== -->
+<div class="card">
+    <div class="card-title">Charlas Íntimas (60+ min)</div>
+
+    {% if sospechosas.intimas %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+
+            {% for s in sospechosas.intimas %}
+            <tr class="{{ 'falso' if s.falso else '' }}">
+                <td>{{ s.inicio|fecha_dia(s.inicio_dia) }}</td>
+                <td>{{ s.fin|fecha_dia(s.fin_dia) }}</td>
+                <td class="right-align {{ charla_badge_class(s.duracion, s.inicio) }} {{ list_font_class }}">{{ s.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No se encontraron charlas íntimas.</p>
+    {% endif %}
+</div>
+
+
+
+<!-- ================================== -->
+<!-- CHARLAS SOSPECHOSAS (HORARIO ÍNTIMO) -->
+<!-- ================================== -->
+<div class="card">
+    <div class="card-title">Charlas Sospechosas (22–03)</div>
+
+    {% if sospechosas.sospechosas %}
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+
+            {% for s in sospechosas.sospechosas %}
+            <tr class="{{ 'falso' if s.falso else '' }}">
+                <td>{{ s.inicio|fecha_dia(s.inicio_dia) }}</td>
+                <td>{{ s.fin|fecha_dia(s.fin_dia) }}</td>
+                <td class="right-align {{ charla_badge_class(s.duracion, s.inicio) }} {{ list_font_class }}">{{ s.duracion|duracion_hm }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No se detectaron charlas sospechosas nocturnas.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<div class="card">
+    <div class="card-title">Timeline de Sesiones</div>
+    <p>Visualizacion de las sesiones online a lo largo del tiempo, agrupadas por dia.</p>
+</div>
+
+<style>
+.timeline-day {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #00eaff;
+}
+
+.timeline-row {
+    margin-bottom: 6px;
+    font-size: inherit;
+}
+
+.timeline-label {
+    display: inline-block;
+    min-width: 180px;
+    color: #b0fafc;
+}
+
+.timeline-bar {
+    display: inline-block;
+    height: 14px;
+    background: #00eaff44;
+    border-radius: 8px;
+    vertical-align: middle;
+}
+</style>
+
+<div class="card {{ list_font_class }}">
+    <div class="card-title">Sesiones</div>
+
+    {% if sesiones %}
+        {# Agrupamos por dia en la plantilla #}
+        {% set current_day = None %}
+        {% for s in sesiones %}
+            {% set session_day = s.session_day if s.session_day is not none else s.inicio.date() %}
+            {% set day_iso = session_day.isoformat() %}
+            {% set day_label = session_day|fecha_dia(s.session_day_name if s.session_day_name else s.inicio_dia, False) %}
+            {% if day_iso != current_day %}
+                {% if not loop.first %}
+                    <br>
+                {% endif %}
+                <div class="timeline-day">
+                    🗓️ {{ day_label }}
+                </div>
+                {% set current_day = day_iso %}
+            {% endif %}
+
+            <div class="timeline-row {{ list_font_class }}{% if s.falso %} falso{% endif %}">
+                <span class="timeline-label">
+                    {{ s.inicio|fecha_dia(s.inicio_dia) }} - 
+                    {% if s.fin %}
+                        {{ s.fin|fecha_dia(s.fin_dia) }}
+                    {% else %}
+                        ?
+                    {% endif %}
+                </span>
+
+                {# ancho proporcional a minutos (minimo 5px para que se vea) #}
+                {% set mins = (s.duracion.total_seconds() / 60) if s.duracion else 0 %}
+                {% if mins < 1 %}
+                    {% set width = 5 %}
+                {% elif mins > 120 %}
+                    {% set width = 240 %}
+                {% else %}
+                    {% set width = mins * 2 %}
+                {% endif %}
+
+                <span class="timeline-bar" style="width: {{ width }}px;"></span>
+
+                <span class="{{ charla_badge_class(s.duracion, s.inicio) }} {{ list_font_class }}" style="margin-left:8px; color:#80cbc4;">
+                    {{ s.duracion|duracion_hm }}
+                </span>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay sesiones registradas.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+

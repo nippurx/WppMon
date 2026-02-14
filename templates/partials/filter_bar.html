@@ -1,0 +1,20 @@
+<div class="filter-bar">
+    <div class="filter-buttons">
+        {% set base = request.path %}
+        <a href="{{ base }}?filter=hoy" class="filter-btn {% if filtro_activo == 'hoy' %}active{% endif %}">Hoy</a>
+        <a href="{{ base }}?filter=ayer" class="filter-btn {% if filtro_activo == 'ayer' %}active{% endif %}">Ayer</a>
+        <a href="{{ base }}?filter=7" class="filter-btn {% if filtro_activo == '7' %}active{% endif %}">7 días</a>
+        <a href="{{ base }}?filter=15" class="filter-btn {% if filtro_activo == '15' %}active{% endif %}">15 días</a>
+        <a href="{{ base }}?filter=30" class="filter-btn {% if filtro_activo == '30' %}active{% endif %}">30 días</a>
+        <a href="{{ base }}?filter=rango" class="filter-btn {% if filtro_activo == 'rango' %}active{% endif %}">Rango</a>
+    </div>
+
+    <form method="get" class="range-form {% if filtro_activo != 'rango' %}hidden{% endif %}">
+        <input type="hidden" name="filter" value="rango">
+        <label>Inicio</label>
+        <input type="date" name="start" value="{{ start_date }}">
+        <label>Fin</label>
+        <input type="date" name="end" value="{{ end_date }}">
+        <button type="submit" class="btn btn-small">Filtrar</button>
+    </form>
+</div>

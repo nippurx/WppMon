@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<div class="card">
+    <div class="card-title">Sesiones detectadas</div>
+
+    <p>Lista de todas las conexiones online detectadas en el log.</p>
+
+    <div class="table-container">
+        <table class="{{ list_font_class }}">
+            <tr>
+                <th>#</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Duración</th>
+            </tr>
+
+            {% for s in sesiones %}
+            <tr class="{{ 'falso' if s.falso else '' }}">
+                <td>{{ loop.index }}</td>
+                <td>
+                    🟢 {{ s.inicio|fecha_dia(s.inicio_dia) }}
+                </td>
+                <td>
+                    {% if s.fin %}
+                        🔴 {{ s.fin|fecha_dia(s.fin_dia) }}
+                    {% else %}
+                        (abierta)
+                {% endif %}
+            </td>
+            <td class="right-align {{ list_font_class }}">
+                    ⏱️ <span class="{{ charla_badge_class(s.duracion, s.inicio) }} {{ list_font_class }}">{{ s.duracion|duracion_hm }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+</div>
+
+{% endblock %}
+
