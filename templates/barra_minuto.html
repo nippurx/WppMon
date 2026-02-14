@@ -12,6 +12,9 @@
 <div class="card">
     {% if day_bars %}
     <style>
+        :root {
+            --bar-width: 20px;
+        }
         .minute-bars-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -35,7 +38,7 @@
             line-height: 1.4;
         }
         .minute-bar {
-            width: 24px;
+            width: calc(var(--bar-width) * 4);
             height: 1440px;
             border: 1px solid #1b2630;
             border-radius: 4px;
@@ -50,6 +53,25 @@
         .minute-pixel.online { background: #00a96e; }
         .minute-pixel.offline { background: #cf3b3b; }
         .minute-pixel.mix { background: #d8b13b; }
+        .minute-tooltip {
+            position: fixed;
+            z-index: 9999;
+            display: none;
+            pointer-events: none;
+            background: #0d171f;
+            border: 1px solid #00eaff66;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #b0fafc;
+            font-size: 30px;
+            line-height: 1.2;
+            white-space: nowrap;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+        }
+        .minute-tooltip-time {
+            color: #00eaff;
+            font-weight: 700;
+        }
     </style>
 
     <div class="minute-bars-grid">
@@ -59,20 +81,67 @@
             <div class="day-bar-summary">
                 Online: {{ day.total_online_seconds|duracion_hm }}<br>
                 Offline: {{ day.total_offline_seconds|duracion_hm }}<br>
-                Min mix: {{ day.mix_minutes }}<br>
-                Transiciones: {{ day.total_transitions }}
+                Min mix: {{ day.mix_minutes }}
             </div>
             <div class="minute-bar">
-                {% for b in day.buckets %}
+                {% for b in day.buckets|reverse %}
                 <span
-                    class="minute-pixel {{ b.color }}"
-                    title="{{ day.day_label }} {{ b.label }} | online={{ b.online_seconds }}s | offline={{ b.offline_seconds }}s | transiciones={{ b.transitions }} | inicio={{ b.timestamp_inicio_minuto|fecha_dia }} | fin={{ b.timestamp_fin_minuto|fecha_dia }}"
+                    class="minute-pixel {{ b.state }}"
+                    data-date="{{ day.day_label }}"
+                    data-block-start="{{ b.block_inicio }}"
+                    data-block-end="{{ b.block_fin }}"
+                    data-block-duration="{{ b.block_duracion_str }}"
+                    data-block-type="{{ b.block_tipo }}"
+                    data-state="{{ b.state }}"
                 ></span>
                 {% endfor %}
             </div>
         </div>
         {% endfor %}
     </div>
+    <div id="minute-tooltip" class="minute-tooltip"></div>
+    <script>
+        (function () {
+            const tooltip = document.getElementById("minute-tooltip");
+            if (!tooltip) return;
+
+            function renderContent(el) {
+                const end = el.dataset.blockEnd || "";
+                const start = el.dataset.blockStart || "";
+                const duration = el.dataset.blockDuration || "";
+                const hasBlock = Boolean(start && end);
+                if (!hasBlock) {
+                    return "<div>Sin dato</div>";
+                }
+
+                return (
+                    '<div class="minute-tooltip-time">FIN: ' + end + "</div>" +
+                    "<div>DURACION: " + duration + "</div>" +
+                    '<div class="minute-tooltip-time">INICIO: ' + start + "</div>"
+                );
+            }
+
+            function positionTooltip(e) {
+                const pad = 14;
+                const x = e.clientX + pad;
+                const y = e.clientY + pad;
+                tooltip.style.left = x + "px";
+                tooltip.style.top = y + "px";
+            }
+
+            document.querySelectorAll(".minute-pixel").forEach((el) => {
+                el.addEventListener("mouseenter", (e) => {
+                    tooltip.innerHTML = renderContent(el);
+                    tooltip.style.display = "block";
+                    positionTooltip(e);
+                });
+                el.addEventListener("mousemove", positionTooltip);
+                el.addEventListener("mouseleave", () => {
+                    tooltip.style.display = "none";
+                });
+            });
+        })();
+    </script>
     {% else %}
     <p>No hay datos en el rango seleccionado.</p>
     {% endif %}
