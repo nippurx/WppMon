@@ -72,6 +72,10 @@
             color: #00eaff;
             font-weight: 700;
         }
+        .minute-tooltip-type {
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
     </style>
 
     <div class="minute-bars-grid">
@@ -109,15 +113,25 @@
                 const end = el.dataset.blockEnd || "";
                 const start = el.dataset.blockStart || "";
                 const duration = el.dataset.blockDuration || "";
+                const type = el.dataset.blockType || "";
                 const hasBlock = Boolean(start && end);
                 if (!hasBlock) {
                     return "<div>Sin dato</div>";
                 }
+                let typeLine = "";
+                if (type === "online") {
+                    typeLine = "🟢 online";
+                } else if (type === "offline") {
+                    typeLine = "🔴 offline";
+                } else if (type === "mix") {
+                    typeLine = "🟡 mixto";
+                }
 
                 return (
-                    '<div class="minute-tooltip-time">FIN: ' + end + "</div>" +
+                    '<div class="minute-tooltip-type">' + typeLine + "</div>" +
+                    '<div class="minute-tooltip-time">INICIO: ' + start + "</div>" +
                     "<div>DURACION: " + duration + "</div>" +
-                    '<div class="minute-tooltip-time">INICIO: ' + start + "</div>"
+                    '<div class="minute-tooltip-time">FIN: ' + end + "</div>"
                 );
             }
 
