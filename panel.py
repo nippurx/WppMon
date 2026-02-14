@@ -9,6 +9,7 @@ from markupsafe import Markup
 import os
 import json
 from datetime import datetime, timedelta, timezone
+import minute_bar
 from analyzer import (
     leer_log,
     generar_sesiones,
@@ -23,6 +24,7 @@ from detectors import (
 )
 
 app = Flask(__name__)
+minute_bar.register_minute_bar(app)
 JSON_DIAS_PATH = "json_dias"
 if not os.path.exists(JSON_DIAS_PATH):
     os.makedirs(JSON_DIAS_PATH)

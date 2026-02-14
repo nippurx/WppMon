@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <div class="card-title">Barra Minuto</div>
+    <p>1 dia = 1 barra vertical (1440 px). Cada pixel representa 1 minuto.</p>
+</div>
+
+{% include "partials/filter_bar.html" %}
+{% include "partials/last_days.html" %}
+
+<div class="card">
+    {% if day_bars %}
+    <style>
+        .minute-bars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+        }
+        .day-bar-card {
+            background: #0f141a;
+            border: 1px solid #1b2630;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .day-bar-title {
+            color: #00eaff;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .day-bar-summary {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #b0fafc;
+            line-height: 1.4;
+        }
+        .minute-bar {
+            width: 24px;
+            height: 1440px;
+            border: 1px solid #1b2630;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #111820;
+        }
+        .minute-pixel {
+            width: 100%;
+            height: 1px;
+            display: block;
+        }
+        .minute-pixel.online { background: #00a96e; }
+        .minute-pixel.offline { background: #cf3b3b; }
+        .minute-pixel.mix { background: #d8b13b; }
+    </style>
+
+    <div class="minute-bars-grid">
+        {% for day in day_bars %}
+        <div class="day-bar-card">
+            <div class="day-bar-title">{{ day.day_label }}</div>
+            <div class="day-bar-summary">
+                Online: {{ day.total_online_seconds|duracion_hm }}<br>
+                Offline: {{ day.total_offline_seconds|duracion_hm }}<br>
+                Min mix: {{ day.mix_minutes }}<br>
+                Transiciones: {{ day.total_transitions }}
+            </div>
+            <div class="minute-bar">
+                {% for b in day.buckets %}
+                <span
+                    class="minute-pixel {{ b.color }}"
+                    title="{{ day.day_label }} {{ b.label }} | online={{ b.online_seconds }}s | offline={{ b.offline_seconds }}s | transiciones={{ b.transitions }} | inicio={{ b.timestamp_inicio_minuto|fecha_dia }} | fin={{ b.timestamp_fin_minuto|fecha_dia }}"
+                ></span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No hay datos en el rango seleccionado.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
