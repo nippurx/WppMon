@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block content %}
 
 <div class="card">
     <div class="card-title">Barra Minuto</div>
-    <p>1 dia = 1 barra vertical (1440 px). Cada pixel representa 1 minuto.</p>
+    <p>1 dia = 1 barra vertical (4320 px). Cada pixel representa 1 minuto (3 px).</p>
 </div>
 
 {% include "partials/filter_bar.html" %}
@@ -39,7 +39,7 @@
         }
         .minute-bar {
             width: calc(var(--bar-width) * 4);
-            height: 1440px;
+            height: 4320px;
             border: 1px solid #1b2630;
             border-radius: 4px;
             overflow: hidden;
@@ -47,7 +47,7 @@
         }
         .minute-pixel {
             width: 100%;
-            height: 1px;
+            height: 3px;
             display: block;
         }
         .minute-pixel.online { background: #00a96e; }
@@ -162,3 +162,4 @@
 </div>
 
 {% endblock %}
+
