@@ -17,11 +17,11 @@ EDGE_BAT = r"edge-wppmon.bat"
 CHECK_INTERVAL = 60  # segundos
 
 # Si el último estado es offline y pasaron más de X minutos desde ese evento -> reiniciar Edge
-OFFLINE_UMBRAL_MIN = 15
+OFFLINE_UMBRAL_MIN = 10
 
 # Para no reiniciar cada 10s cuando ya se pasó el umbral:
 # mientras siga offline, reinicia como máximo 1 vez cada X minutos
-RESTART_COOLDOWN_MIN = 15
+RESTART_COOLDOWN_MIN = 10
 
 # =========================
 # UTILIDADES
