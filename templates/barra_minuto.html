@@ -52,7 +52,7 @@
         }
         .minute-pixel.online { background: #00a96e; }
         .minute-pixel.offline { background: #cf3b3b; }
-        .minute-pixel.mix { background: #d8b13b; }
+        .minute-pixel.special { background: #d8b13b; }
         .minute-tooltip {
             position: fixed;
             z-index: 9999;
@@ -85,7 +85,7 @@
             <div class="day-bar-summary">
                 Online: {{ day.total_online_seconds|duracion_hm }}<br>
                 Offline: {{ day.total_offline_seconds|duracion_hm }}<br>
-                Min mix: {{ day.mix_minutes }}
+                Min especiales: {{ day.special_minutes }}
             </div>
             <div class="minute-bar">
                 {% for b in day.buckets|reverse %}
@@ -123,8 +123,8 @@
                     typeLine = "🟢 online";
                 } else if (type === "offline") {
                     typeLine = "🔴 offline";
-                } else if (type === "mix") {
-                    typeLine = "🟡 mixto";
+                } else if (type === "special") {
+                    typeLine = "🟡 especial";
                 }
 
                 return (

@@ -133,10 +133,8 @@ def _new_day_buckets(day_date):
                 "minute_index": minute_index,
                 "label_start": start_minute.strftime("%H:%M:%S"),
                 "label_end": (end_minute - timedelta(seconds=1)).strftime("%H:%M:%S"),
-                "online_s": 0,
-                "offline_s": 0,
-                "state": "mix",
-                "_parts": [],
+                "state": "special",
+                "_point": start_minute + timedelta(seconds=30),
                 "block_tipo": "",
                 "block_inicio": "",
                 "block_fin": "",
@@ -170,11 +168,30 @@ def _format_duration_hm(valor):
 
 def _clip_blocks_for_day(items, day_start, day_end):
     blocks = []
+    invalid_ranges = []
     for item in items:
         inicio = item.get("inicio")
         fin = item.get("fin")
         tipo = item.get("tipo")
-        if inicio is None or fin is None or tipo not in {"online", "offline"}:
+        if tipo not in {"online", "offline"}:
+            continue
+        if inicio is None or fin is None or fin <= inicio:
+            if inicio is None and fin is None:
+                invalid_ranges.append((day_start, day_end))
+                continue
+
+            inv_start = inicio if inicio is not None else day_start
+            inv_end = fin if fin is not None else day_end
+
+            if inicio is not None and fin is not None and fin <= inicio:
+                inv_end = inicio + timedelta(minutes=1)
+
+            inv_start = max(inv_start, day_start)
+            inv_end = min(inv_end, day_end)
+            if inv_end <= inv_start:
+                inv_end = min(day_end, inv_start + timedelta(minutes=1))
+            if inv_end > inv_start:
+                invalid_ranges.append((inv_start, inv_end))
             continue
         seg_inicio = max(inicio, day_start)
         seg_fin = min(fin, day_end)
@@ -192,115 +209,63 @@ def _clip_blocks_for_day(items, day_start, day_end):
             }
         )
     blocks.sort(key=lambda x: x["inicio_clip"])
-    return blocks
+    return blocks, invalid_ranges
 
 
-def _apply_block_to_day_buckets(block, day_start, buckets):
-    inicio = block["inicio_clip"]
-    fin = block["fin_clip"]
-    tipo = block["tipo"]
-
-    if fin <= inicio:
-        return
-
-    first_minute_idx = int((inicio - day_start).total_seconds() // 60)
-    last_minute_idx = int(((fin - timedelta(microseconds=1)) - day_start).total_seconds() // 60)
-    if first_minute_idx < 0:
-        first_minute_idx = 0
-    if last_minute_idx >= MINUTES_PER_DAY:
-        last_minute_idx = MINUTES_PER_DAY - 1
-
-    for idx in range(first_minute_idx, last_minute_idx + 1):
-        bucket_start = day_start + timedelta(minutes=idx)
-        bucket_end = bucket_start + timedelta(minutes=1)
-        overlap_start = inicio if inicio > bucket_start else bucket_start
-        overlap_end = fin if fin < bucket_end else bucket_end
-        overlap_s = int((overlap_end - overlap_start).total_seconds())
-        if overlap_s <= 0:
-            continue
-        if tipo == "online":
-            buckets[idx]["online_s"] += overlap_s
-        else:
-            buckets[idx]["offline_s"] += overlap_s
-        buckets[idx]["_parts"].append(
-            {
-                "overlap_s": overlap_s,
-                "tipo": tipo,
-                "inicio_real": block["inicio_real"],
-                "fin_real": block["fin_real"],
-                "duracion_str": block["duracion_str"],
-            }
-        )
+def _find_blocks_for_point(blocks, point):
+    return [b for b in blocks if b["inicio_clip"] <= point < b["fin_clip"]]
 
 
-def _apply_item_to_day_buckets(item, day_start, day_end, buckets):
-    inicio = item.get("inicio")
-    fin = item.get("fin")
-    tipo = item.get("tipo")
-    if inicio is None or fin is None or tipo not in {"online", "offline"}:
-        return
-
-    seg_inicio = max(inicio, day_start)
-    seg_fin = min(fin, day_end)
-    if seg_fin <= seg_inicio:
-        return
-
-    first_minute_idx = int((seg_inicio - day_start).total_seconds() // 60)
-    last_minute_idx = int(((seg_fin - timedelta(microseconds=1)) - day_start).total_seconds() // 60)
-    if first_minute_idx < 0:
-        first_minute_idx = 0
-    if last_minute_idx >= MINUTES_PER_DAY:
-        last_minute_idx = MINUTES_PER_DAY - 1
-
-    for idx in range(first_minute_idx, last_minute_idx + 1):
-        bucket_start = day_start + timedelta(minutes=idx)
-        bucket_end = bucket_start + timedelta(minutes=1)
-        overlap_start = seg_inicio if seg_inicio > bucket_start else bucket_start
-        overlap_end = seg_fin if seg_fin < bucket_end else bucket_end
-        overlap_s = int((overlap_end - overlap_start).total_seconds())
-        if overlap_s <= 0:
-            continue
-        if tipo == "online":
-            buckets[idx]["online_s"] += overlap_s
-        else:
-            buckets[idx]["offline_s"] += overlap_s
+def _set_bucket_from_block(bucket, block):
+    bucket["state"] = block["tipo"]
+    bucket["block_tipo"] = block["tipo"]
+    bucket["block_inicio"] = block["inicio_real"].strftime("%H:%M:%S")
+    bucket["block_fin"] = block["fin_real"].strftime("%H:%M:%S")
+    bucket["block_duracion_str"] = block["duracion_str"]
 
 
-def _finalize_day_buckets(buckets):
+def _point_is_in_invalid_range(point, invalid_ranges):
+    for inv_start, inv_end in invalid_ranges:
+        if inv_start <= point < inv_end:
+            return True
+    return False
+
+
+def _finalize_day_buckets(buckets, day_blocks, invalid_ranges):
     total_online = 0
     total_offline = 0
-    mix_minutes = 0
-    for b in buckets:
-        online_s = b["online_s"]
-        offline_s = b["offline_s"]
-        total_online += online_s
-        total_offline += offline_s
-        if online_s == 60:
-            b["state"] = "online"
-        elif offline_s == 60:
-            b["state"] = "offline"
-        elif online_s > 0 and offline_s > 0:
-            b["state"] = "mix"
-            mix_minutes += 1
+    special_minutes = 0
+    for block in day_blocks:
+        overlap_s = int((block["fin_clip"] - block["inicio_clip"]).total_seconds())
+        if overlap_s <= 0:
+            continue
+        if block["tipo"] == "online":
+            total_online += overlap_s
         else:
-            b["state"] = "mix"
+            total_offline += overlap_s
 
-        if b["_parts"]:
-            best = max(
-                b["_parts"],
-                key=lambda p: (p["overlap_s"], 1 if p["tipo"] == "offline" else 0),
-            )
-            b["block_tipo"] = best["tipo"]
-            b["block_inicio"] = best["inicio_real"].strftime("%H:%M:%S")
-            b["block_fin"] = best["fin_real"].strftime("%H:%M:%S")
-            b["block_duracion_str"] = best["duracion_str"]
-        else:
-            b["block_tipo"] = ""
-            b["block_inicio"] = ""
-            b["block_fin"] = ""
-            b["block_duracion_str"] = ""
-        b.pop("_parts", None)
-    return total_online, total_offline, mix_minutes
+    for b in buckets:
+        b["block_tipo"] = ""
+        b["block_inicio"] = ""
+        b["block_fin"] = ""
+        b["block_duracion_str"] = ""
+        b["state"] = "special"
+        point = b["_point"]
+        try:
+            if _point_is_in_invalid_range(point, invalid_ranges):
+                special_minutes += 1
+                continue
+
+            matching_blocks = _find_blocks_for_point(day_blocks, point)
+            if len(matching_blocks) == 1:
+                _set_bucket_from_block(b, matching_blocks[0])
+            else:
+                special_minutes += 1
+        except Exception:
+            special_minutes += 1
+        finally:
+            b.pop("_point", None)
+    return total_online, total_offline, special_minutes
 
 
 def _build_day_bars_from_items(panel_mod, items, start, end):
@@ -311,10 +276,10 @@ def _build_day_bars_from_items(panel_mod, items, start, end):
         day_start = datetime.combine(day, datetime.min.time())
         day_end = day_start + timedelta(days=1)
         buckets = _new_day_buckets(day)
-        day_blocks = _clip_blocks_for_day(items, day_start, day_end)
-        for block in day_blocks:
-            _apply_block_to_day_buckets(block, day_start, buckets)
-        total_online, total_offline, mix_minutes = _finalize_day_buckets(buckets)
+        day_blocks, invalid_ranges = _clip_blocks_for_day(items, day_start, day_end)
+        total_online, total_offline, special_minutes = _finalize_day_buckets(
+            buckets, day_blocks, invalid_ranges
+        )
         day_bars.append(
             {
                 "date": day.isoformat(),
@@ -323,7 +288,7 @@ def _build_day_bars_from_items(panel_mod, items, start, end):
                 "blocks": day_blocks,
                 "total_online_seconds": total_online,
                 "total_offline_seconds": total_offline,
-                "mix_minutes": mix_minutes,
+                "special_minutes": special_minutes,
             }
         )
         day += timedelta(days=1)
